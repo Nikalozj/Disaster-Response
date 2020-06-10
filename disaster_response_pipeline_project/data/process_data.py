@@ -1,9 +1,17 @@
 import sys
-
+import pandas as pd
+from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
-    pass
 
+	#create dataframes from csv files
+    messages = pd.read_csv(messages_filepath)
+    categories = pd.read_csv(categories_filepath)
+    
+    #merge dataframes
+    df = messages.merge(categories, on='id', how='left')
+    
+    return df
 
 def clean_data(df):
     pass
