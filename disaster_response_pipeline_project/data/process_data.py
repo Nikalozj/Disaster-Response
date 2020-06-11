@@ -14,7 +14,33 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
-    pass
+    
+    #create df of 36 individual columns from 'categories' column, which is delimited by ';'
+    categories = df['categories'].str.split(';', expand=True)
+    
+    #create column names from the first row
+    row = categories.iloc[0]
+    category_colnames = row.apply(lambda x : x[:len(x)-2])
+    categories.columns = category_colnames
+    
+    #convert category values to 0 or 1
+    for column in categories:
+        # set each value to be the last character of the string
+        categories[column] = categories[column].apply(lambda x : x[len(x)-1 : ])
+
+        # convert column from string to numeric
+        categories[column] = categories[column].apply(lambda x : int(x))
+        
+    #drop 'categories' column from df
+    df.drop(columns = "categories", inplace = True)
+    
+    #concatenate 'categories' df to original df
+    df = pd.concat([df, categories], axis=1)
+    
+    #drop duplicates
+    df.drop_duplicates('original', inplace=True)
+    
+    return df
 
 
 def save_data(df, database_filename):
