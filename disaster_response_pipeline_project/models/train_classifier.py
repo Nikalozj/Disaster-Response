@@ -17,7 +17,16 @@ import nltk
 nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
 
 def load_data(database_filepath):
-    pass
+    
+    #Read data to df
+    engine = create_engine('sqlite:///{}'.format(database_filepath))
+    df = pd.read_sql('SELECT * FROM {}'.format(database_filepath), engine)
+    
+    #Create X and Y
+    X = df['message']
+    Y = df.drop(columns=['id','message','original','genre'])
+    
+    return X, Y, Y.columns.values
 
 
 def tokenize(text):
