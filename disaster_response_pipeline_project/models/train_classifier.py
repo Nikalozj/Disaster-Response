@@ -69,7 +69,16 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+    
+    #predict values using the model
+    Y_pred = model.predict(X_test)
+    
+    #iterate through each column of Y test and print classification_report for each of them
+    for i in range(0, len(Y_test.columns.values)):
+        print("-----------------")
+        print(category_names[i])
+        print("-----------------")
+        print(classification_report(Y_test.values.transpose()[i], Y_pred.transpose()[i]))
 
 
 def save_model(model, model_filepath):
