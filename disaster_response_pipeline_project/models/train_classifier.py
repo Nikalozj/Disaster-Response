@@ -62,7 +62,7 @@ def build_model():
     }
     
 
-    #Create optimized model
+    #Optimize the model
     cv = GridSearchCV(pipeline, param_grid=parameters)
     
     return cv
