@@ -45,7 +45,27 @@ def tokenize(text):
 
 
 def build_model():
-    pass
+    
+    #create pipeline
+    pipeline = Pipeline([
+        ('vect', CountVectorizer(tokenizer=tokenize)),
+        ('tfidf', TfidfTransformer()),
+        ('moc', MultiOutputClassifier())
+    ])
+    
+    #Create parameters for GridsearchCV
+    parameters = {
+        'vect__max_df': (0.5, 0.75, 1.0),
+        'vect__max_features': (None, 5000, 10000),
+        'tfidf__use_idf': (True, False),
+        'moc__estimator': (RandomForestClassifier(), ExtraTreesClassifier())
+    }
+    
+
+    #Create optimized model
+    cv = GridSearchCV(pipeline, param_grid=parameters)
+    
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
