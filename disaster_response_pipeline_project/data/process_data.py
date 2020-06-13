@@ -47,7 +47,7 @@ def save_data(df, database_filename):
     
     #save data as sql
     engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql(database_filename, engine, index=False)
+    df.to_sql(database_filename.split("/",1)[1][:-3], engine, index=False)
 
 
 def main():
