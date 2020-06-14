@@ -58,3 +58,7 @@ Here's how the project structure looks like after installation:
 ### Licencing, Authors
 
 Web app code, csv files and code structure of process_data.py and train_classifier.py were provided by Udacity.com. The rest was done by me using the skills I've developed throughout the program.
+
+### Github Repo
+
+Here's a [link](https://github.com/Nikalozj/Disaster-Response.git) to my github repo.
