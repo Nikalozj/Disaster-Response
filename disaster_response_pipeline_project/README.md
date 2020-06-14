@@ -8,7 +8,7 @@ Main goal of the project was to create a classification model which automaticall
 
 A simple web app is provided to test how the model works.
 
-### Installation
+### Installation and Use
 
 There should be no necessary libraries to run the code here beyond the Anaconda distribution of Python. The code should run with no issues using Python versions 3.*
 
@@ -28,6 +28,8 @@ The following steps are needed to run the app:
     `python run.py`
 
 3. Go to http://0.0.0.0:3001/
+
+You can enter a message in the box, press the "Classify Message" button and the classifier will color the labels it finds most suitable.
 
 ### File Structure
 
