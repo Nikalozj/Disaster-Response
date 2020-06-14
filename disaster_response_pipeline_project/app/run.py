@@ -42,6 +42,14 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    #weather data
+    weather_counts = df[['floods', 'storm', 'fire', 'earthquake', 'cold', 'other_weather']].sum().values
+    weather_names = df[['floods', 'storm', 'fire', 'earthquake', 'cold', 'other_weather']].sum().index.tolist()
+    
+    #infrastructure data
+    infrastructure_counts = df[['transport', 'buildings', 'electricity', 'tools', 'hospitals', 'shops', 'aid_centers', 'other_infrastructure']].sum().values
+    infrastructure_names = df[['transport', 'buildings', 'electricity', 'tools', 'hospitals', 'shops', 'aid_centers', 'other_infrastructure']].sum().index.tolist()
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -61,6 +69,45 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        
+        {
+            'data': [
+                Bar(
+                    x=weather_names,
+                    y=weather_counts
+                )
+            ],
+            
+            'layout': {
+                
+                'title': 'Weather Related Message Distribution',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Weather Type"
+                }
+            }
+        },
+                {
+            'data': [
+                Bar(
+                    x=infrastructure_names,
+                    y=infrastructure_counts
+                )
+            ],
+            
+            'layout': {
+                
+                'title': 'Infrastructure Related Message Distribution',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Infrastructure Type"
                 }
             }
         }
