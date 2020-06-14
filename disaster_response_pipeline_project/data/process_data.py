@@ -4,6 +4,17 @@ from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
 
+	"""
+	Takes two csv files and merges them into a dataframe
+
+	Parameters:
+		messages_filepath -- path to messages file
+		categories_filepath -- path to categories file
+
+	Retruns:
+		df - dataframe after merging the csv file data
+	"""
+
 	#create dataframes from csv files
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
@@ -14,11 +25,21 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
-    
+
+    """
+    Takes a dataframe, cleans and restructures it for model creation
+
+    Parameters:
+    	df - a dataframe to be cleaned
+
+    Retruns:
+    	df - dataframe after cleaning and restructuring
+    """
+
     #create df of 36 individual columns from 'categories' column, which is delimited by ';'
     categories = df['categories'].str.split(';', expand=True)
     
-    #create column names from the first row
+    #name the columns using first row of the table
     row = categories.iloc[0]
     category_colnames = row.apply(lambda x : x[:len(x)-2])
     categories.columns = category_colnames
@@ -43,25 +64,29 @@ def clean_data(df):
     return df
 
 
-def save_data(df, database_filename):
+def save_data(df, database_filepath):
+    """ Saves dataframe as sql database"""
     
-    #save data as sql
-    engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql(database_filename.split("/",1)[1][:-3], engine, index=False)
+    engine = create_engine('sqlite:///{}'.format(database_filepath))
+    df.to_sql(database_filepath.split("/",1)[1][:-3], engine, index=False)
 
 
 def main():
     if len(sys.argv) == 4:
 
+    	#Store filepaths in variables
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
 
+        #Create a dataframe from csv files
         print('Loading data...\n    MESSAGES: {}\n    CATEGORIES: {}'
               .format(messages_filepath, categories_filepath))
         df = load_data(messages_filepath, categories_filepath)
 
+        #Clean the dataframe
         print('Cleaning data...')
         df = clean_data(df)
         
+        #Save the dataframe as sql database
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)
         

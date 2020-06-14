@@ -17,10 +17,23 @@ import nltk
 nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
 
 def load_data(database_filepath):
-    
+
+    """
+	Loads data to a dataframe and splits it into variables X and Y 
+
+	Parameters:
+		database_filepath -- path of the database
+
+	Returns:
+		X - list of messages to be processed
+		Y - categories
+		Y.columns.values - list of column names
+
+	"""
+
     #Read data to df
     engine = create_engine('sqlite:///{}'.format(database_filepath))
-    df = pd.read_sql('SELECT * FROM {}'.format(database_filepath), engine)
+    df = pd.read_sql('SELECT * FROM {}'.format(database_filepath.split("/",1)[1][:-3]), engine)
     
     #Create X and Y
     X = df['message']
@@ -31,11 +44,15 @@ def load_data(database_filepath):
 
 def tokenize(text):
 
-	#Creating tokekens list and lemmatizer
+	""" Takes text and returns cleaned list of tokens """
+
+	#Create tokens' list
     tokens = word_tokenize(text)
+
+    #Create lemmatizer
     lemmatizer = WordNetLemmatizer()
     
-    #Cleaning tokens
+    #Clean tokens
     clean_tokens = []
     for tok in tokens:
         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
@@ -45,7 +62,10 @@ def tokenize(text):
 
 
 def build_model():
-    
+
+    """ Creates a pipeline, tunes it with GridsearcgCV and returns a tuned model"""
+
+
     #create pipeline
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -69,7 +89,18 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    
+
+    """
+	Predicts Y values using the model and prints classification report for each column
+
+	Parameters:
+		model -- model to be tested
+		X_test -- X test values
+		Y_test -- Y test values
+		category_names -- Y column names
+
+    """
+
     #predict values using the model
     Y_pred = model.predict(X_test)
     
@@ -82,25 +113,38 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
-    pass
+
+    """ Save model as pickle file """
+
+    pickle.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
     if len(sys.argv) == 3:
+
+    	#Put database and model filepaths into variables
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
+
+        #Load data
         X, Y, category_names = load_data(database_filepath)
+
+        #Apply train_test_split to the data
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
+        #Create model
         print('Building model...')
         model = build_model()
         
+        #Fit the model
         print('Training model...')
         model.fit(X_train, Y_train)
         
+        #Evaluate the model
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
 
+        #Save the model
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)
 
