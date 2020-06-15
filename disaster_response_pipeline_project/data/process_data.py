@@ -68,7 +68,7 @@ def save_data(df, database_filepath):
     """ Saves dataframe as sql database"""
     
     engine = create_engine('sqlite:///{}'.format(database_filepath))
-    df.to_sql(database_filepath.split("/",1)[1][:-3], engine, index=False)
+    df.to_sql(database_filepath.split("/")[-1][:-3], engine, index=False)
 
 
 def main():

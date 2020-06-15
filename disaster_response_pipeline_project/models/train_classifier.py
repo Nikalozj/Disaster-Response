@@ -33,7 +33,7 @@ def load_data(database_filepath):
 
     #Read data to df
     engine = create_engine('sqlite:///{}'.format(database_filepath))
-    df = pd.read_sql('SELECT * FROM {}'.format(database_filepath.split("/",1)[1][:-3]), engine)
+    df = pd.read_sql('SELECT * FROM {}'.format(database_filepath.split("/")[-1][:-3]), engine)
     
     #Create X and Y
     X = df['message']
